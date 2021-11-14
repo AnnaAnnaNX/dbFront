@@ -73,6 +73,14 @@
         <v-list-item to="AddAllProducts">
           <v-list-item-title>(new)Добавление товаров</v-list-item-title>
         </v-list-item>
+
+        <v-list-item to="MainAssortiment">
+          <v-list-item-title>Основной ассортимент</v-list-item-title>
+        </v-list-item>
+
+        <v-list-item to="Sources">
+          <v-list-item-title>Источники</v-list-item-title>
+        </v-list-item>
         
         <v-list-item to="ShowAllProducts">
           <v-list-item-title>(new)Показ всех товаров</v-list-item-title>
