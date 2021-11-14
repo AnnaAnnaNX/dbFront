@@ -1,48 +1,52 @@
 <template>
   <div>
-    <h3>Show Providers</h3>
+    <h3>Показ файлов-источников</h3>
     <div class='mt-5'>
       <v-data-table
-        v-if="PROVIDERS"
+        v-if="providers"
         :headers="headers"
-        :items="PROVIDERS"
+        :items="providers"
         :items-per-page="5"
         class="elevation-1"
-      ></v-data-table>
+      >
+        <template v-slot:item.fields="{ item }">
+          {{ item.fileds }}
+        </template>
+      </v-data-table>
     </div>
-    <h3 class='mt-10'>Add Provider</h3>
+    <h3 class='mt-10'>Добавить поставщика</h3>
     <v-form>
       <div>
-        <label>nameProvider</label>
+        <label>Название поставщика</label>
         <v-text-field v-model='nameProvider' class='input' required />
       </div>
       <div>
-        <label>row</label>
+        <label>Строка в таблице, где начинается товар</label>
         <v-text-field v-model='row' class='input' />
       </div>
       <div>
-        <label>tabName</label>
+        <label>Имя страницы в документе (не заполняется для .csv)</label>
         <v-text-field v-model='tabName' class='input' />
       </div>
       <div>
-        <label>columnInnerId</label>
+        <label>Буква столбца с идентификаторов товара у поставщика</label>
         <v-text-field v-model='columnNumInnerId' class='input' />
       </div>
       <div>
-        <label>columnName</label>
+        <label>Буква столбца с названием товара</label>
         <v-text-field v-model='columnNumName' class='input' />
       </div>
       <div>
-        <label>columnPrice</label>
+        <label>Буква столбца с ценой товара</label>
         <v-text-field v-model='columnNumPrice' class='input' />
       </div>
       <div>
-        <label>columnCountProduct</label>
+        <label>Буква столбца с количеством товара</label>
         <v-text-field v-model='columnNumCountProduct' class='input' />
       </div>
       <div>
-        <v-btn @click="save" color='primary' class='mr-5'>Save</v-btn>
-        <v-btn @click="reset">Reset</v-btn>
+        <v-btn @click="save" color='primary' class='mr-5'>Сохранить поставщика</v-btn>
+        <v-btn @click="reset">Очистить</v-btn>
       </div>
     </v-form>
   </div>
@@ -72,12 +76,31 @@ export default {
   computed: {
     ...mapGetters(["PROVIDERS"]),
     headers() {
-      const fields = ['id', 'nameProvider', 'row', 'tabName', 'columnInnerId', 'columnName', 'columnPrice', 'columnCountProduct'];
+      const fields = ['id', 'nameProvider', 'row', 'tabName', 'fields'];
       return fields.map((el) => ({
         text: el,
         align: 'start',
         value: el,
       }));
+    },
+    providers() {
+      return this.PROVIDERS.map((obj) => {
+        let fileds = null;
+        if (obj.fieldsNames
+          && obj.fieldsNames.length
+          && obj.fieldsSymbols
+          && obj.fieldsSymbols.length
+          && (obj.fieldsNames.length === obj.fieldsSymbols.length)
+         ) {
+          fileds = obj.fieldsNames.map((name, i) => {
+            return `${name} (${obj.fieldsSymbols[i]})`;
+          }).join(', \n');
+        }
+        return {
+          ...obj,
+          fileds
+        };
+      });
     }
   },
   mounted() {
@@ -95,16 +118,28 @@ export default {
       this.columnNumCountProduct = null;
     },
     async save() {
-      await this.NEW_PROVIDER({
-        nameProvider: this.nameProvider,
-        row: this.row,
-        tabName: this.tabName,
-        columnInnerId: this.columnNumInnerId,
-        columnName: this.columnNumName,
-        columnPrice: this.columnNumPrice,
-        columnCountProduct: this.columnNumCountProduct
-      })
-      this.reset();
+      if (this.nameProvider
+      && this.row
+      && this.columnNumInnerId
+      && this.columnNumName
+      && this.columnNumPrice
+      && this.columnNumCountProduct) {
+        await this.NEW_PROVIDER({
+          nameProvider: this.nameProvider,
+          row: this.row,          
+          tabName: this.tabName,
+          fieldsNames: JSON.stringify(['innerId', 'name', 'price', 'count']),
+          fieldsSymbols: JSON.stringify([
+            this.columnNumInnerId,
+            this.columnNumName,
+            this.columnNumPrice,
+            this.columnNumCountProduct
+          ])
+        });
+        this.reset();
+      } else {
+        alert('Заполнены не все поля');
+      }
     }
   },
 };

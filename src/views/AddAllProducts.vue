@@ -33,7 +33,7 @@
       <h3>Products from files</h3>
       <div>
           <v-data-table
-            v-if="contentFile"
+            v-if="idProvider && headers && contentFile"
             :headers="headers"
             :items="contentFile"
             :items-per-page="5"
@@ -72,13 +72,32 @@ export default {
   },
   computed: {
     ...mapGetters(["doubleCount"]),
+    provider() {
+      if (!this.idProvider
+      || !this.idProvider.id
+      || !this.providers) {
+        return null;
+      }
+      let provider = null;
+      this.providers.forEach((obj) => {
+        if (obj.id === this.idProvider.id) {
+          provider = obj;
+        }
+      });
+      return provider;
+    },
     headers() {
-      const fields = [
-          'idProductProvider',
-          'name',
-          'price',
-          'count'
-        ];
+      if (!this.provider
+      || !this.provider.fieldsNames) {
+        return null;
+      }
+      const fields = JSON.parse(this.provider.fieldsNames);
+      // const fields = [
+      //     'idProductProvider',
+      //     'name',
+      //     'price',
+      //     'count'
+      //   ];
       return fields.map((el) => ({
         text: el,
         align: 'start',

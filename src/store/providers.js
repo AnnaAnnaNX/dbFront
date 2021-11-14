@@ -11,7 +11,16 @@ const generateFeeds = {
   },
   mutations: {
     ADD_PROVIDERS(state, payload) {
-      state.providers = payload;
+      const providers = payload.map((obj) => {
+        const fieldsNames = obj && obj.fieldsNames && JSON.parse(obj.fieldsNames);
+        const fieldsSymbols = obj && obj.fieldsSymbols && JSON.parse(obj.fieldsSymbols);
+        return {
+          ...obj,
+          fieldsNames,
+          fieldsSymbols
+        }
+      });
+      state.providers = providers;
     },
   },
   actions: {
