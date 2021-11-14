@@ -160,8 +160,18 @@ export default {
       if (!this.contentFile) {
         console.log('empty content');
       }
+      
       axios
-        .post("http://localhost:3000/api/addProviderProducts", {rows: this.contentFile}, {
+        .post("http://localhost:3000/api/addProviderProducts", {
+            rows: this.contentFile.map((row) => {
+              const fields = JSON.parse(this.provider.fieldsNames);
+              return {
+                ...row,
+                idProductProvider: row['innerId'],
+                values: JSON.stringify(fields.map((el) => (row[el])))
+              };
+            })          
+          }, {
           headers: {
             "Content-Type": "application/json",
           },
