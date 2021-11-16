@@ -23,7 +23,10 @@
       </template>
     </v-data-table>
     <div v-if="error !== null">Error - {{ error }}</div>
-    <!-- <v-btn @click="writeRowsInExcel" color="primary">Выгрузить в Excel</v-btn> -->
+    <v-btn
+     @click.prevent="writeRowsInExcel"
+     color="primary"
+    >Выгрузить в Excel</v-btn>
   </div>
 </template>
 
@@ -263,22 +266,28 @@ export default {
         });
     },
     writeRowsInExcel() {
-      axios
-        .post("http://localhost:3000/api/writeRowsInExcel", 
-        { 
-          headers: this.headers,
-          rows: [
-            ...this.tableInfo.rows, 
-            ...this.tableInfo.notLinkedRows
-          ]
-        }, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then(() => {
-          console.log("SUCCESS");
-        })
+      axios({
+        url: "http://localhost:3000/api/writeRowsInExcel",
+        method: "POST",
+        responseType: 'arraybuffer'
+      }).then((response) => {
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement("a");
+
+        fileLink.href = fileURL;
+        let date = new Date();
+        let hours = date.getHours();
+        let seconds = date.getSeconds();
+        let month = date.getMonth();
+        let day = date.getDate();
+        fileLink.setAttribute(
+          "download",
+          `yml_${name}_${month}_${day}__${hours}_${seconds}.xlsx`
+        );
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
+      })
         .catch(() => {
           console.log("ERROR");
         });

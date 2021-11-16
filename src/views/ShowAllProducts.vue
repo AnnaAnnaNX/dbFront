@@ -44,7 +44,8 @@
       </template>
     </v-data-table>
     <div v-if="error !== null">Error - {{ error }}</div>
-    <!-- <v-btn @click="writeRowsInExcel" color="primary">Выгрузить в Excel</v-btn> -->
+    <v-btn @click="writeRowsInExcel" color="primary">Выгрузить в Excel</v-btn>
+    11111
   </div>
 </template>
 
