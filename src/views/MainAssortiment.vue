@@ -1,23 +1,6 @@
 <template>
   <div>
-    <v-row>
-      <v-col>
-        <p>Отображать товары не основного ассортимента для сопоставления</p>
-        <v-radio-group v-model="showNotLinkedProduct">
-          <v-radio
-            :value="null"      
-            label="не показывать"
-          ></v-radio>
-          <v-radio
-            v-for="provider in providers"
-            :key="provider.id"
-            :value="provider.id"      
-            :label="`${provider.nameProvider} #${provider.id}`"
-          ></v-radio>
-        </v-radio-group>
-      </v-col>
-    </v-row>
-    {{ tableInfo && tableInfo.rows }}
+    <h3>Основной ассортимент</h3>
     <v-data-table
       v-if="tableInfo && tableInfo.rows"
       :headers="headers"
@@ -35,6 +18,9 @@
           ></v-select>
         </div>
       </template>
+      <template v-slot:item._1CUpdate="{ item }">
+        {{ moment(item['1CUpdate']) }}
+      </template>
     </v-data-table>
     <div v-if="error !== null">Error - {{ error }}</div>
     <!-- <v-btn @click="writeRowsInExcel" color="primary">Выгрузить в Excel</v-btn> -->
@@ -43,6 +29,7 @@
 
 <script>
 import axios from "axios";
+import moment from 'moment';
 
 export default {
   name: "MainAssortiment",
@@ -140,6 +127,19 @@ export default {
             obj[el.idMainProduct]['providerProductprice'] = values && values[n];
             obj[el.idMainProduct]['providerProductUpdate'] = el.updatedAt;
           }
+          // newPrice
+          if (obj[el.idMainProduct]['providerProductprice']
+            && obj[el.idMainProduct]['1CPrice']) {
+              const dataProvider = obj[el.idMainProduct]['providerProductUpdate']
+                &&  moment(obj[el.idMainProduct]['providerProductUpdate']);
+              const data1C = obj[el.idMainProduct]['1CUpdate']
+                &&  moment(obj[el.idMainProduct]['1CUpdate']);
+              console.log('dataProvider');
+              console.log(dataProvider);
+              console.log('data1C');
+              console.log(data1C);
+          }
+
         }
       });
       const rows = Object.keys(obj).map((id) => ({id: id, ...obj[id]}));

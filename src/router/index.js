@@ -14,11 +14,11 @@ const routes = [
     name: "Feeds",
     component: () => import("../views/Feeds.vue"),
   },
-  {
-    path: "/",
-    name: "AddProducts",
-    component: () => import("../views/AddProducts.vue"),
-  },
+  // {
+  //   path: "/",
+  //   name: "AddProducts",
+  //   component: () => import("../views/AddProducts.vue"),
+  // },
   {
     path: "/set-prices",
     name: "SetPrices",
@@ -45,7 +45,7 @@ const routes = [
     component: () => import("../views/ShowAllProducts.vue"),
   },
   {
-    path: "/MainAssortiment",
+    path: "/",
     name: "MainAssortiment",
     component: () => import("../views/MainAssortiment.vue"),
   },

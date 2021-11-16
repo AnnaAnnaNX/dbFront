@@ -46,25 +46,21 @@
       fixed
     >
       <v-list>
-        <v-list-item to="/">
+        <!-- <v-list-item to="/">
           Добавить товары или обновить цены и наличие
-        </v-list-item>
+        </v-list-item> -->
 
         <!-- <v-list-item to="set-prices">
           <v-list-item-title>Обновить цены и наличие</v-list-item-title>
         </v-list-item> -->
 
-        <v-list-item to="feeds">
-          <v-list-item-title>Выгрузить фиды</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item to="all-products">
+        <!-- <v-list-item to="all-products">
           <v-list-item-title>Просмотр товаров</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
 
-        <v-list-item to="add-products">
+        <!-- <v-list-item to="add-products">
           <v-list-item-title>Добавление товаров с сопоставлением</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
 
         <v-list-item to="providers">
           <v-list-item-title>(new)Провайдеры</v-list-item-title>
@@ -74,7 +70,7 @@
           <v-list-item-title>(new)Добавление товаров</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="MainAssortiment">
+        <v-list-item :to="{ path: '/' }">
           <v-list-item-title>Основной ассортимент</v-list-item-title>
         </v-list-item>
 
@@ -82,9 +78,13 @@
           <v-list-item-title>Источники</v-list-item-title>
         </v-list-item>
         
-        <v-list-item to="ShowAllProducts">
-          <v-list-item-title>(new)Показ всех товаров</v-list-item-title>
+        <v-list-item to="feeds">
+          <v-list-item-title>Выгрузить фиды</v-list-item-title>
         </v-list-item>
+
+        <!-- <v-list-item to="ShowAllProducts">
+          <v-list-item-title>(new)Показ всех товаров</v-list-item-title>
+        </v-list-item> -->
         
       </v-list>
     </v-navigation-drawer>
