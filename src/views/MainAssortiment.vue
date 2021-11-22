@@ -26,7 +26,12 @@
     <v-btn
      @click.prevent="writeRowsInExcel"
      color="primary"
-    >Выгрузить в Excel</v-btn>
+    >Выгрузить ассортимент в Excel</v-btn>
+    <v-btn
+     @click.prevent="writeMarkupInExcel"
+     color="primary"
+     class='ml-5'
+    >Выгрузить файл для установки наценки</v-btn>
   </div>
 </template>
 
@@ -143,6 +148,18 @@ export default {
               console.log(data1C);
           }
 
+          // берет цену поставщика или если ее нет, то цену 1С
+          if (obj[el.idMainProduct]['markup']
+            || obj[el.idMainProduct]['providerProductprice']
+            || obj[el.idMainProduct]['1CPrice']) {
+              const val = obj[el.idMainProduct]['markup'] * (obj[el.idMainProduct]['providerProductprice']
+            || obj[el.idMainProduct]['1CPrice']);
+            if (val) {
+              obj[el.idMainProduct]['newPrice'] = Math.round(val);
+            }
+          }
+
+
         }
       });
       const rows = Object.keys(obj).map((id) => ({id: id, ...obj[id]}));
@@ -156,13 +173,14 @@ export default {
         '1CId',
         '1CName',
         '1CPrice',
-        '1CUpdate',
+        // '1CUpdate',
         'markupId',
         'markup',
         'providerName',
         'providerProductName',
         'providerProductprice',
-        'providerProductUpdate'
+        // 'providerProductUpdate',
+        'newPrice'
       ];
 
       return {
@@ -269,6 +287,47 @@ export default {
       axios({
         url: "http://localhost:3000/api/writeRowsInExcel",
         method: "POST",
+        data: {
+          headers: this.headers,
+          rows: this.tableInfo && this.tableInfo.rows
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+        responseType: 'arraybuffer'
+      }).then((response) => {
+        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        var fileLink = document.createElement("a");
+
+        fileLink.href = fileURL;
+        let date = new Date();
+        let hours = date.getHours();
+        let seconds = date.getSeconds();
+        let month = date.getMonth();
+        let day = date.getDate();
+        fileLink.setAttribute(
+          "download",
+          `yml_${name}_${month}_${day}__${hours}_${seconds}.xlsx`
+        );
+        document.body.appendChild(fileLink);
+
+        fileLink.click();
+      })
+        .catch(() => {
+          console.log("ERROR");
+        });
+    },
+    writeMarkupInExcel() {
+      axios({
+        url: "http://localhost:3000/api/writeMarkupInExcel",
+        method: "POST",
+        data: {
+          headers: this.headers,
+          rows: this.tableInfo && this.tableInfo.rows
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
         responseType: 'arraybuffer'
       }).then((response) => {
         var fileURL = window.URL.createObjectURL(new Blob([response.data]));
