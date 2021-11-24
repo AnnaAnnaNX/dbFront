@@ -347,8 +347,10 @@ export default {
 
         fileLink.click();
       })
-        .catch(() => {
-          console.log("ERROR");
+        .catch((e) => {
+          console.log(e);
+          console.log('e.message');
+          console.log(e.message);
         });
     }
   },

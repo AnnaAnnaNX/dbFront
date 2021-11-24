@@ -31,7 +31,7 @@ export default {
       axios({
         url: link,
         method: "GET",
-        responseType: "blob",
+        responseType: "application/json"
       }).then((response) => {
         var fileURL = window.URL.createObjectURL(new Blob([response.data]));
         var fileLink = document.createElement("a");
@@ -49,6 +49,9 @@ export default {
         document.body.appendChild(fileLink);
 
         fileLink.click();
+      }).catch((e) => {
+        console.log(e && e.response && e.response.data || '');
+        alert(e && e.response && e.response.data && e.response.data.error || 'error')
       });
     },
   },
