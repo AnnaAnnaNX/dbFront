@@ -1,11 +1,15 @@
 <template>
-  <div>    
+  <div>
     <v-data-table
-      v-if="headers && providerProducts"
+      v-if="headers && items"
       :headers="headers"
       :items="items"
       :items-per-page="5"
       :search="search"
+      :single-select="true"
+      :value="[idProductSourceForBinding]"
+      item-key="id"
+      @click:row="clickRow"
       class="elevation-1">
         <template v-slot:top>
           <v-text-field
@@ -19,6 +23,8 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
+
 export default {
   name: "providerProductsTable",
   props: ['providerProducts', 'idProvider', 'providers'],
@@ -27,6 +33,9 @@ export default {
     search: ''
   }),
   computed: {
+    ...mapGetters([
+      'idProductSourceForBinding'
+    ]),
     headerNames() {
        if (!this.providers || !this.idProvider) {
         return null;
@@ -54,11 +63,13 @@ export default {
       if (!this.providerProducts) {
         return [];
       }
-      const arr = this.providerProducts
-        .filter(el => (el.idProvider === this.idProvider));
+      const arr = this.providerProducts.filter(el => (el.idProvider === this.idProvider));
       return arr.map((el) => {
         const values = JSON.parse(el.values);
-        const obj = {idMainProduct: el.idMainProduct};
+        const obj = {
+          id: el.id,
+          idMainProduct: el.idMainProduct
+        };
         values.forEach((val, i) => {
           const index = this.headerNames[i];
           if (index) {
@@ -67,6 +78,18 @@ export default {
         })
         return obj;
       });
+    }
+  },
+  methods: {
+    ...mapMutations([
+      "SET_idProductSourceForBinding"
+    ]),
+    clickRow(obj) {
+      console.log('clickRow');
+      console.log(obj);
+      if (obj) {
+        this.SET_idProductSourceForBinding(obj);
+      }
     }
   }
 };

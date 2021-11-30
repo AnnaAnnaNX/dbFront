@@ -22,11 +22,46 @@
       <h4>Основной ассортимент</h4>
       <mainProductsTable :mainProducts="MAIN_PRODUCTS" />
     </v-col>
+    <v-dialog
+      v-model="openConfirmBinding"
+      persistent
+      max-width="290"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          Связать товар #{{ idProductSourceForBinding
+            && idProductSourceForBinding.innerId }}
+          с товаром основного ассортимента #{{ idMainAssortForBinding
+            && idMainAssortForBinding.id }}
+        </v-card-title>
+        
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="() => {
+              SET_idProductSourceForBinding(null);
+              SET_idMainAssortForBinding(null);
+            }"
+          >
+            Disagree
+          </v-btn>
+          <v-btn
+            color="green darken-1"
+            text
+            @click="dialog = false"
+          >
+            Agree
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-row>
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import providerProductsTable from '../components/providerProductsTable.vue';
 import mainProductsTable from '../components/mainProductsTable.vue';
 
@@ -43,7 +78,10 @@ export default {
     ...mapGetters([
       "MAIN_PRODUCTS",
       "PROVIDER_PRODUCTS",
-      "PROVIDERS"
+      "PROVIDERS",
+      "openConfirmBinding",
+      "idProductSourceForBinding",
+      "idMainAssortForBinding"
     ]),
   },
   mounted() {
@@ -59,6 +97,10 @@ export default {
     });
   },
   methods: {
+    ...mapMutations([      
+      "SET_idProductSourceForBinding",
+      "SET_idMainAssortForBinding"
+    ]),
     ...mapActions([
       "GET_MAIN_PRODUCTS",
       "GET_PROVIDER_PRODUCTS",

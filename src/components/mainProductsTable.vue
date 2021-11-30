@@ -1,11 +1,15 @@
 <template>
   <div>
     <v-data-table
-      v-if="mainProducts"
+      v-if="headers && mainProducts"
       :headers="headers"
       :items="mainProducts"
       :items-per-page="5"
       :search="search"
+      :single-select="true"
+      :value="[idMainAssortForBinding]"
+      item-key="id"
+      @click:row="clickRow"
       class="elevation-1">
         <template v-slot:top>
           <v-text-field
@@ -19,14 +23,19 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
+
 export default {
   name: "mainProductsTable",
   props: ['mainProducts'],
 
   data: () => ({
-    search: '',
+    search: ''
   }),
   computed: {
+    ...mapGetters([
+      'idMainAssortForBinding'
+    ]),
     headers() {
       return [
         'id',
@@ -44,6 +53,18 @@ export default {
         value: el,
       }));
     },
+  },
+  methods: {
+    ...mapMutations([
+      "SET_idMainAssortForBinding"
+    ]),
+    clickRow(obj) {
+      console.log('clickRow');
+      console.log(obj);
+      if (obj) {
+        this.SET_idMainAssortForBinding(obj);
+      }
+    }
   }
 };
 </script>
