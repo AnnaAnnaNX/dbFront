@@ -53,7 +53,12 @@ const routes = [
     path: "/Sources",
     name: "Sources",
     component: () => import("../views/Sources.vue"),
-  }
+  },
+  {
+    path: "/Binding",
+    name: "Binding",
+    component: () => import("../views/Binding.vue"),
+  },
 ];
 
 const router = new VueRouter({

@@ -1,4 +1,4 @@
-const axios = require('axios');
+const axios = require("axios");
 
 const generateFeeds = {
   state: {
@@ -12,13 +12,15 @@ const generateFeeds = {
   mutations: {
     ADD_PROVIDERS(state, payload) {
       const providers = payload.map((obj) => {
-        const fieldsNames = obj && obj.fieldsNames && JSON.parse(obj.fieldsNames);
-        const fieldsSymbols = obj && obj.fieldsSymbols && JSON.parse(obj.fieldsSymbols);
+        const fieldsNames =
+          obj && obj.fieldsNames && JSON.parse(obj.fieldsNames);
+        const fieldsSymbols =
+          obj && obj.fieldsSymbols && JSON.parse(obj.fieldsSymbols);
         return {
           ...obj,
           fieldsNames,
-          fieldsSymbols
-        }
+          fieldsSymbols,
+        };
       });
       state.providers = providers;
     },
@@ -33,11 +35,7 @@ const generateFeeds = {
           },
         })
         .then((result) => {
-          if (
-            result &&
-            result.data && 
-            result.data.data
-          ) {
+          if (result && result.data && result.data.data) {
             commit("ADD_PROVIDERS", result.data.data);
           }
         })
@@ -54,7 +52,7 @@ const generateFeeds = {
           },
         })
         .then(() => {
-          dispatch('GET_PROVIDERS');          
+          dispatch("GET_PROVIDERS");
         })
         .catch(() => {
           console.log("ERROR");

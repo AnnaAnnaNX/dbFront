@@ -12,32 +12,33 @@
         </div>
         <div v-else>
           <v-select
-            :items="['New', ...mainProducts.map((el) => (el.id))]"
+            :items="['New', ...mainProducts.map((el) => el.id)]"
             label="Связать"
-            @change="(val) => {select(val, item)}"
+            @change="
+              (val) => {
+                select(val, item);
+              }
+            "
           ></v-select>
         </div>
       </template>
       <template v-slot:item._1CUpdate="{ item }">
-        {{ moment(item['1CUpdate']) }}
+        {{ moment(item["1CUpdate"]) }}
       </template>
     </v-data-table>
     <div v-if="error !== null">Error - {{ error }}</div>
-    <v-btn
-     @click.prevent="writeRowsInExcel"
-     color="primary"
-    >Выгрузить ассортимент в Excel</v-btn>
-    <v-btn
-     @click.prevent="writeMarkupInExcel"
-     color="primary"
-     class='ml-5'
-    >Выгрузить файл для установки наценки</v-btn>
+    <v-btn @click.prevent="writeRowsInExcel" color="primary"
+      >Выгрузить ассортимент в Excel</v-btn
+    >
+    <v-btn @click.prevent="writeMarkupInExcel" color="primary" class="ml-5"
+      >Выгрузить файл для установки наценки</v-btn
+    >
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import moment from 'moment';
+import moment from "moment";
 
 export default {
   name: "MainAssortiment",
@@ -49,7 +50,7 @@ export default {
       providers: null,
       error: null,
       shortListHeaders: true,
-      showNotLinkedProduct: null
+      showNotLinkedProduct: null,
     };
   },
   // column name - <имя поля> #<idProvider>
@@ -59,9 +60,11 @@ export default {
       if (!this.mainProducts || !this.providerProducts || !this.providers) {
         return null;
       }
-      const mainIds = this.mainProducts.map((el) => (el.id));
+      const mainIds = this.mainProducts.map((el) => el.id);
       const obj = {};
-      mainIds.forEach((el) => {obj[el] = {}});
+      mainIds.forEach((el) => {
+        obj[el] = {};
+      });
       // иметь сопоставление idProvider с именем провайдера
       // nameProviderIdProviderObj {idProvider: nameProvider}
       const nameProviderIdProviderObj = {};
@@ -69,7 +72,8 @@ export default {
         if (provider.id) {
           nameProviderIdProviderObj[provider.nameProvider] = {
             id: provider.id,
-            fieldsNames: provider.fieldsNames && JSON.parse(provider.fieldsNames)
+            fieldsNames:
+              provider.fieldsNames && JSON.parse(provider.fieldsNames),
           };
         }
       });
@@ -82,110 +86,122 @@ export default {
       this.providerProducts.forEach((el) => {
         if (el.idMainProduct) {
           // obj[idMainProduct][`count #${el.idProvider}`] = el.count;
-          
-          if (nameProviderIdProviderObj['YM'] &&
-            (el.idProvider === nameProviderIdProviderObj['YM'].id)) {
-            obj[el.idMainProduct]['YMId'] = el.idProductProvider;
-            const fieldsNames = nameProviderIdProviderObj['YM'].fieldsNames;
-            const n = fieldsNames.indexOf('name');
+
+          if (
+            nameProviderIdProviderObj["YM"] &&
+            el.idProvider === nameProviderIdProviderObj["YM"].id
+          ) {
+            obj[el.idMainProduct]["YMId"] = el.idProductProvider;
+            const fieldsNames = nameProviderIdProviderObj["YM"].fieldsNames;
+            const n = fieldsNames.indexOf("name");
             const values = el.values && JSON.parse(el.values);
-            obj[el.idMainProduct]['YMName'] = values && values[n];
-          } else
-          if (nameProviderIdProviderObj['Ozon'] &&
-            (el.idProvider === nameProviderIdProviderObj['Ozon'].id)) {
-            obj[el.idMainProduct]['OzonId'] = el.idProductProvider;
-            const fieldsNames = nameProviderIdProviderObj['Ozon'].fieldsNames;
-            const n = fieldsNames.indexOf('name');
-            const values = el.values && JSON.parse(el.values); 
-            obj[el.idMainProduct]['OzonName'] = values && values[n];
-          } else
-          if (nameProviderIdProviderObj['1C'] &&
-            (el.idProvider === nameProviderIdProviderObj['1C'].id)) {
-            obj[el.idMainProduct]['1CId'] = el.idProductProvider;
-            const values = el.values && JSON.parse(el.values); 
-            const fieldsNames = nameProviderIdProviderObj['1C'].fieldsNames;
-            let n = fieldsNames.indexOf('name');
-            obj[el.idMainProduct]['1CName'] = values && values[n];
-            n = fieldsNames.indexOf('price');
-            obj[el.idMainProduct]['1CPrice'] = values && values[n];
-            obj[el.idMainProduct]['1CUpdate'] = el.updatedAt;
-          } else    
-          if (nameProviderIdProviderObj['markup'] &&
-            (el.idProvider === nameProviderIdProviderObj['markup'].id)) {
-            obj[el.idMainProduct]['markupId'] = el.idProductProvider;
+            obj[el.idMainProduct]["YMName"] = values && values[n];
+          } else if (
+            nameProviderIdProviderObj["Ozon"] &&
+            el.idProvider === nameProviderIdProviderObj["Ozon"].id
+          ) {
+            obj[el.idMainProduct]["OzonId"] = el.idProductProvider;
+            const fieldsNames = nameProviderIdProviderObj["Ozon"].fieldsNames;
+            const n = fieldsNames.indexOf("name");
             const values = el.values && JSON.parse(el.values);
-            const fieldsNames = nameProviderIdProviderObj['markup'].fieldsNames;
-            let n = fieldsNames.indexOf('markup');
-            obj[el.idMainProduct]['markup'] = values && values[n];
-          } else
+            obj[el.idMainProduct]["OzonName"] = values && values[n];
+          } else if (
+            nameProviderIdProviderObj["1C"] &&
+            el.idProvider === nameProviderIdProviderObj["1C"].id
+          ) {
+            obj[el.idMainProduct]["1CId"] = el.idProductProvider;
+            const values = el.values && JSON.parse(el.values);
+            const fieldsNames = nameProviderIdProviderObj["1C"].fieldsNames;
+            let n = fieldsNames.indexOf("name");
+            obj[el.idMainProduct]["1CName"] = values && values[n];
+            n = fieldsNames.indexOf("price");
+            obj[el.idMainProduct]["1CPrice"] = values && values[n];
+            obj[el.idMainProduct]["1CUpdate"] = el.updatedAt;
+          } else if (
+            nameProviderIdProviderObj["markup"] &&
+            el.idProvider === nameProviderIdProviderObj["markup"].id
+          ) {
+            obj[el.idMainProduct]["markupId"] = el.idProductProvider;
+            const values = el.values && JSON.parse(el.values);
+            const fieldsNames = nameProviderIdProviderObj["markup"].fieldsNames;
+            let n = fieldsNames.indexOf("markup");
+            obj[el.idMainProduct]["markup"] = values && values[n];
+          }
           // здесь только поставщики (берем любого поставщика)
-          if (!obj[el.idMainProduct]['providerName']) {            
-            console.log('el.idProvider');
+          else if (!obj[el.idMainProduct]["providerName"]) {
+            console.log("el.idProvider");
             console.log(el.idProvider);
             const providerName = idProviderNameProviderObj[el.idProvider];
-            console.log('providerName');
+            console.log("providerName");
             console.log(providerName);
-            obj[el.idMainProduct]['providerName'] = providerName;
-            const fieldsNames = nameProviderIdProviderObj[providerName]
-            && nameProviderIdProviderObj[providerName].fieldsNames;
-            let n = fieldsNames && fieldsNames.indexOf('name');
-            const values = el.values && JSON.parse(el.values); 
-            obj[el.idMainProduct]['providerProductName'] = values && values[n];
-            n = fieldsNames && fieldsNames.indexOf('price');
-            obj[el.idMainProduct]['providerProductprice'] = values && values[n];
-            obj[el.idMainProduct]['providerProductUpdate'] = el.updatedAt;
+            obj[el.idMainProduct]["providerName"] = providerName;
+            const fieldsNames =
+              nameProviderIdProviderObj[providerName] &&
+              nameProviderIdProviderObj[providerName].fieldsNames;
+            let n = fieldsNames && fieldsNames.indexOf("name");
+            const values = el.values && JSON.parse(el.values);
+            obj[el.idMainProduct]["providerProductName"] = values && values[n];
+            n = fieldsNames && fieldsNames.indexOf("price");
+            obj[el.idMainProduct]["providerProductprice"] = values && values[n];
+            obj[el.idMainProduct]["providerProductUpdate"] = el.updatedAt;
           }
           // newPrice
-          if (obj[el.idMainProduct]['providerProductprice']
-            && obj[el.idMainProduct]['1CPrice']) {
-              const dataProvider = obj[el.idMainProduct]['providerProductUpdate']
-                &&  moment(obj[el.idMainProduct]['providerProductUpdate']);
-              const data1C = obj[el.idMainProduct]['1CUpdate']
-                &&  moment(obj[el.idMainProduct]['1CUpdate']);
-              console.log('dataProvider');
-              console.log(dataProvider);
-              console.log('data1C');
-              console.log(data1C);
+          if (
+            obj[el.idMainProduct]["providerProductprice"] &&
+            obj[el.idMainProduct]["1CPrice"]
+          ) {
+            const dataProvider =
+              obj[el.idMainProduct]["providerProductUpdate"] &&
+              moment(obj[el.idMainProduct]["providerProductUpdate"]);
+            const data1C =
+              obj[el.idMainProduct]["1CUpdate"] &&
+              moment(obj[el.idMainProduct]["1CUpdate"]);
+            console.log("dataProvider");
+            console.log(dataProvider);
+            console.log("data1C");
+            console.log(data1C);
           }
 
           // берет цену поставщика или если ее нет, то цену 1С
-          if (obj[el.idMainProduct]['markup']
-            || obj[el.idMainProduct]['providerProductprice']
-            || obj[el.idMainProduct]['1CPrice']) {
-              const val = obj[el.idMainProduct]['markup'] * (obj[el.idMainProduct]['providerProductprice']
-            || obj[el.idMainProduct]['1CPrice']);
+          if (
+            obj[el.idMainProduct]["markup"] ||
+            obj[el.idMainProduct]["providerProductprice"] ||
+            obj[el.idMainProduct]["1CPrice"]
+          ) {
+            const val =
+              obj[el.idMainProduct]["markup"] *
+              (obj[el.idMainProduct]["providerProductprice"] ||
+                obj[el.idMainProduct]["1CPrice"]);
             if (val) {
-              obj[el.idMainProduct]['newPrice'] = Math.round(val);
+              obj[el.idMainProduct]["newPrice"] = Math.round(val);
             }
           }
-
-
         }
       });
-      const rows = Object.keys(obj).map((id) => ({id: id, ...obj[id]}));
-      console.log('rows');
+      const rows = Object.keys(obj).map((id) => ({ id: id, ...obj[id] }));
+      console.log("rows");
       console.log(rows);
       const shortListHeaders = [
-        'YMId',
-        'YMName',
-        'OzonId',
-        'OzonName',
-        '1CId',
-        '1CName',
-        '1CPrice',
+        "YMId",
+        "YMName",
+        "OzonId",
+        "OzonName",
+        "1CId",
+        "1CName",
+        "1CPrice",
         // '1CUpdate',
-        'markupId',
-        'markup',
-        'providerName',
-        'providerProductName',
-        'providerProductprice',
+        "markupId",
+        "markup",
+        "providerName",
+        "providerProductName",
+        "providerProductprice",
         // 'providerProductUpdate',
-        'newPrice'
+        "newPrice",
       ];
 
       return {
         rows,
-        shortListHeaders: ['id', ...shortListHeaders],
+        shortListHeaders: ["id", ...shortListHeaders],
       };
     },
     headers() {
@@ -195,10 +211,10 @@ export default {
       let list = this.tableInfo.shortListHeaders;
       return list.map((el) => ({
         text: el,
-        align: 'start',
+        align: "start",
         value: el,
       }));
-    }
+    },
   },
   mounted() {
     console.log("MOUNTED");
@@ -235,11 +251,7 @@ export default {
         },
       })
       .then((result) => {
-        if (
-          result &&
-          result.data && 
-          result.data.data
-        ) {
+        if (result && result.data && result.data.data) {
           this.providers = result.data.data;
         }
       })
@@ -255,9 +267,9 @@ export default {
     select(val, row) {
       console.log(val);
       console.log(row);
-    //  idProvider || !idProductProvider || !idMainProduct
+      //  idProvider || !idProductProvider || !idMainProduct
       if (!this.showNotLinkedProduct) {
-        return 'error';
+        return "error";
       }
       const idProductProvider = row[`id #${this.showNotLinkedProduct}`];
       const idProvider = this.showNotLinkedProduct;
@@ -265,7 +277,7 @@ export default {
         idProductProvider,
         idProvider,
       };
-      if (val !== 'New') {
+      if (val !== "New") {
         obj.idMainProduct = val;
       }
       axios
@@ -276,11 +288,11 @@ export default {
         })
         .then(() => {
           console.log("SUCCESS");
-          alert('Связан');
+          alert("Связан");
         })
         .catch(() => {
           console.log("ERROR");
-          alert('Ошибка');
+          alert("Ошибка");
         });
     },
     writeRowsInExcel() {
@@ -289,30 +301,31 @@ export default {
         method: "POST",
         data: {
           headers: this.headers,
-          rows: this.tableInfo && this.tableInfo.rows
+          rows: this.tableInfo && this.tableInfo.rows,
         },
         headers: {
           "Content-Type": "application/json",
         },
-        responseType: 'arraybuffer'
-      }).then((response) => {
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
-
-        fileLink.href = fileURL;
-        let date = new Date();
-        let hours = date.getHours();
-        let seconds = date.getSeconds();
-        let month = date.getMonth();
-        let day = date.getDate();
-        fileLink.setAttribute(
-          "download",
-          `yml_${name}_${month}_${day}__${hours}_${seconds}.xlsx`
-        );
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
+        responseType: "arraybuffer",
       })
+        .then((response) => {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+          var fileLink = document.createElement("a");
+
+          fileLink.href = fileURL;
+          let date = new Date();
+          let hours = date.getHours();
+          let seconds = date.getSeconds();
+          let month = date.getMonth();
+          let day = date.getDate();
+          fileLink.setAttribute(
+            "download",
+            `yml_${name}_${month}_${day}__${hours}_${seconds}.xlsx`
+          );
+          document.body.appendChild(fileLink);
+
+          fileLink.click();
+        })
         .catch(() => {
           console.log("ERROR");
         });
@@ -323,36 +336,37 @@ export default {
         method: "POST",
         data: {
           headers: this.headers,
-          rows: this.tableInfo && this.tableInfo.rows
+          rows: this.tableInfo && this.tableInfo.rows,
         },
         headers: {
           "Content-Type": "application/json",
         },
-        responseType: 'arraybuffer'
-      }).then((response) => {
-        var fileURL = window.URL.createObjectURL(new Blob([response.data]));
-        var fileLink = document.createElement("a");
-
-        fileLink.href = fileURL;
-        let date = new Date();
-        let hours = date.getHours();
-        let seconds = date.getSeconds();
-        let month = date.getMonth();
-        let day = date.getDate();
-        fileLink.setAttribute(
-          "download",
-          `yml_${name}_${month}_${day}__${hours}_${seconds}.xlsx`
-        );
-        document.body.appendChild(fileLink);
-
-        fileLink.click();
+        responseType: "arraybuffer",
       })
+        .then((response) => {
+          var fileURL = window.URL.createObjectURL(new Blob([response.data]));
+          var fileLink = document.createElement("a");
+
+          fileLink.href = fileURL;
+          let date = new Date();
+          let hours = date.getHours();
+          let seconds = date.getSeconds();
+          let month = date.getMonth();
+          let day = date.getDate();
+          fileLink.setAttribute(
+            "download",
+            `yml_${name}_${month}_${day}__${hours}_${seconds}.xlsx`
+          );
+          document.body.appendChild(fileLink);
+
+          fileLink.click();
+        })
         .catch((e) => {
           console.log(e);
-          console.log('e.message');
+          console.log("e.message");
           console.log(e.message);
         });
-    }
+    },
   },
 };
 </script>

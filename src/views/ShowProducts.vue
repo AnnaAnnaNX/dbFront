@@ -26,7 +26,7 @@ export default {
         {
           text: "id",
           value: "id",
-          sort: (a, b) => (a - b)
+          sort: (a, b) => a - b,
         },
         {
           text: "name",

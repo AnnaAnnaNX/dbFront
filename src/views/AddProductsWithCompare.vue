@@ -14,7 +14,9 @@
       <div class="my-10">
         <v-btn :disabled="!this.file" v-on:click="submitFile()">Submit</v-btn>
       </div>
-      <div v-if="readFromFile !== null">Read from file - {{ readFromFile }}</div>
+      <div v-if="readFromFile !== null">
+        Read from file - {{ readFromFile }}
+      </div>
       <div v-if="added !== null">Created or updated - {{ added }}</div>
       <div v-if="error !== null">Error - {{ error }}</div>
     </div>
@@ -47,13 +49,7 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
-const showHeaders = [
-  'name',
-  'skuYm',
-  'artOzon',
-  'innerId'
-];
-
+const showHeaders = ["name", "skuYm", "artOzon", "innerId"];
 
 export default {
   name: "AddProducts",
@@ -77,11 +73,14 @@ export default {
       if (!this.listFields) {
         return null;
       }
-      
-      const fields = [...this.listFields.filter(el => (showHeaders.includes(el))), 'innerId'];
+
+      const fields = [
+        ...this.listFields.filter((el) => showHeaders.includes(el)),
+        "innerId",
+      ];
       return fields.map((el) => ({
         text: el,
-        align: 'start',
+        align: "start",
         value: el,
       }));
     },
@@ -91,45 +90,36 @@ export default {
       }
       return this.contentWithId.map((row) => ({
         ...row,
-        innerId: null
+        innerId: null,
       }));
     },
     headersProductDb() {
       if (!this.productsInDb) {
         return null;
       }
-      return [
-        'name',
-        'skuYm',
-        'artOzon',
-        'id'
-      ].map(el => ({
+      return ["name", "skuYm", "artOzon", "id"].map((el) => ({
         text: el,
-        align: 'start',
+        align: "start",
         value: el,
       }));
-    }
+    },
   },
   mounted() {
     axios
-        .get("http://localhost:3000/api/getProducts", {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((result) => {
-          if (
-            result &&
-            result.data &&
-            result.data.data
-          ) {
-            this.productsInDb = result.data.data;
-          }
-        })
-        .catch(() => {
-          console.log("ERROR");
-          this.productsInDb = null;
-        });
+      .get("http://localhost:3000/api/getProducts", {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((result) => {
+        if (result && result.data && result.data.data) {
+          this.productsInDb = result.data.data;
+        }
+      })
+      .catch(() => {
+        console.log("ERROR");
+        this.productsInDb = null;
+      });
   },
   methods: {
     handleFileUpload() {

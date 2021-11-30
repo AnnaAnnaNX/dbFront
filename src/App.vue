@@ -63,11 +63,11 @@
         </v-list-item> -->
 
         <v-list-item to="providers">
-          <v-list-item-title>(new)Провайдеры</v-list-item-title>
+          <v-list-item-title>Источники</v-list-item-title>
         </v-list-item>
 
         <v-list-item to="AddAllProducts">
-          <v-list-item-title>(new)Добавление товаров</v-list-item-title>
+          <v-list-item-title>Добавление данных</v-list-item-title>
         </v-list-item>
 
         <v-list-item :to="{ path: '/' }">
@@ -77,7 +77,11 @@
         <v-list-item to="Sources">
           <v-list-item-title>Источники</v-list-item-title>
         </v-list-item>
-        
+
+        <v-list-item to="Binding">
+          <v-list-item-title>Связывание товаров</v-list-item-title>
+        </v-list-item>
+
         <v-list-item to="feeds">
           <v-list-item-title>Выгрузить фиды</v-list-item-title>
         </v-list-item>
@@ -85,7 +89,6 @@
         <!-- <v-list-item to="ShowAllProducts">
           <v-list-item-title>(new)Показ всех товаров</v-list-item-title>
         </v-list-item> -->
-        
       </v-list>
     </v-navigation-drawer>
 

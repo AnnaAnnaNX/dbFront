@@ -4,22 +4,17 @@
       <v-col>
         <p>Показывать непустые столбцы</p>
         <div>
-          <v-switch
-            v-model="shortListHeaders"
-          ></v-switch>
+          <v-switch v-model="shortListHeaders"></v-switch>
         </div>
       </v-col>
       <v-col>
         <p>Отображать товары не основного ассортимента для сопоставления</p>
         <v-radio-group v-model="showNotLinkedProduct">
-          <v-radio
-            :value="null"      
-            label="не показывать"
-          ></v-radio>
+          <v-radio :value="null" label="не показывать"></v-radio>
           <v-radio
             v-for="provider in providers"
             :key="provider.id"
-            :value="provider.id"      
+            :value="provider.id"
             :label="`${provider.nameProvider} #${provider.id}`"
           ></v-radio>
         </v-radio-group>
@@ -36,9 +31,13 @@
         </div>
         <div v-else>
           <v-select
-            :items="['New', ...mainProducts.map((el) => (el.id))]"
+            :items="['New', ...mainProducts.map((el) => el.id)]"
             label="Связать"
-            @change="(val) => {select(val, item)}"
+            @change="
+              (val) => {
+                select(val, item);
+              }
+            "
           ></v-select>
         </div>
       </template>
@@ -62,7 +61,7 @@ export default {
       providers: null,
       error: null,
       shortListHeaders: true,
-      showNotLinkedProduct: null
+      showNotLinkedProduct: null,
     };
   },
   // column name - <имя поля> #<idProvider>
@@ -72,10 +71,12 @@ export default {
       if (!this.mainProducts || !this.providerProducts || !this.providers) {
         return null;
       }
-      const mainIds = this.mainProducts.map((el) => (el.id));
+      const mainIds = this.mainProducts.map((el) => el.id);
       const obj = {};
-      mainIds.forEach((el) => {obj[el] = {}});
-      const shortListHeaders = []; 
+      mainIds.forEach((el) => {
+        obj[el] = {};
+      });
+      const shortListHeaders = [];
       this.providerProducts.forEach((el) => {
         if (el.idMainProduct) {
           const idMainProduct = el.idMainProduct;
@@ -83,28 +84,28 @@ export default {
             obj[idMainProduct] = {};
           }
           if (el.idProductProvider) {
-            const title = `id #${el.idProvider}`; 
+            const title = `id #${el.idProvider}`;
             if (!shortListHeaders.includes(title)) {
               shortListHeaders.push(`id #${el.idProvider}`);
             }
             obj[idMainProduct][`id #${el.idProvider}`] = el.idProductProvider;
           }
           if (el.name) {
-            const title = `name #${el.idProvider}`; 
+            const title = `name #${el.idProvider}`;
             if (!shortListHeaders.includes(title)) {
               shortListHeaders.push(`name #${el.idProvider}`);
             }
             obj[idMainProduct][`name #${el.idProvider}`] = el.name;
           }
           if (el.price) {
-            const title = `price #${el.idProvider}`; 
+            const title = `price #${el.idProvider}`;
             if (!shortListHeaders.includes(title)) {
               shortListHeaders.push(`price #${el.idProvider}`);
             }
             obj[idMainProduct][`price #${el.idProvider}`] = el.price;
           }
           if (el.count) {
-            const title = `count #${el.idProvider}`; 
+            const title = `count #${el.idProvider}`;
             if (!shortListHeaders.includes(title)) {
               shortListHeaders.push(`count #${el.idProvider}`);
             }
@@ -112,43 +113,43 @@ export default {
           }
         }
       });
-      const rows = Object.keys(obj).map((id) => ({id: id, ...obj[id]}));
+      const rows = Object.keys(obj).map((id) => ({ id: id, ...obj[id] }));
       let notLinkedRows = [];
       if (this.showNotLinkedProduct) {
         notLinkedRows = this.providerProducts
-          .filter((el) => (el.idProvider === this.showNotLinkedProduct))
+          .filter((el) => el.idProvider === this.showNotLinkedProduct)
           .map((el) => {
             const obj = {};
             if (el.idProductProvider) {
-            const title = `id #${el.idProvider}`; 
-            if (!shortListHeaders.includes(title)) {
-              shortListHeaders.push(`id #${el.idProvider}`);
+              const title = `id #${el.idProvider}`;
+              if (!shortListHeaders.includes(title)) {
+                shortListHeaders.push(`id #${el.idProvider}`);
+              }
+              obj[`id #${el.idProvider}`] = el.idProductProvider;
             }
-            obj[`id #${el.idProvider}`] = el.idProductProvider;
-          }
             if (el.name) {
-            const title = `name #${el.idProvider}`; 
-            if (!shortListHeaders.includes(title)) {
-              shortListHeaders.push(`name #${el.idProvider}`);
+              const title = `name #${el.idProvider}`;
+              if (!shortListHeaders.includes(title)) {
+                shortListHeaders.push(`name #${el.idProvider}`);
+              }
+              obj[`name #${el.idProvider}`] = el.name;
             }
-            obj[`name #${el.idProvider}`] = el.name;
-          }
-          if (el.price) {
-            const title = `price #${el.idProvider}`; 
-            if (!shortListHeaders.includes(title)) {
-              shortListHeaders.push(`price #${el.idProvider}`);
+            if (el.price) {
+              const title = `price #${el.idProvider}`;
+              if (!shortListHeaders.includes(title)) {
+                shortListHeaders.push(`price #${el.idProvider}`);
+              }
+              obj[`price #${el.idProvider}`] = el.price;
             }
-            obj[`price #${el.idProvider}`] = el.price;
-          }
-          if (el.count) {
-            const title = `count #${el.idProvider}`; 
-            if (!shortListHeaders.includes(title)) {
-              shortListHeaders.push(`count #${el.idProvider}`);
+            if (el.count) {
+              const title = `count #${el.idProvider}`;
+              if (!shortListHeaders.includes(title)) {
+                shortListHeaders.push(`count #${el.idProvider}`);
+              }
+              obj[`count #${el.idProvider}`] = el.count;
             }
-            obj[`count #${el.idProvider}`] = el.count;
-          }
-          return obj;
-        })
+            return obj;
+          });
       }
 
       const fulllListHeaders = [];
@@ -162,8 +163,8 @@ export default {
       return {
         rows,
         notLinkedRows,
-        shortListHeaders: ['id', ...shortListHeaders],
-        fulllListHeaders: ['id', ...fulllListHeaders]
+        shortListHeaders: ["id", ...shortListHeaders],
+        fulllListHeaders: ["id", ...fulllListHeaders],
       };
     },
     headers() {
@@ -178,10 +179,10 @@ export default {
       }
       return list.map((el) => ({
         text: el,
-        align: 'start',
+        align: "start",
         value: el,
       }));
-    }
+    },
   },
   mounted() {
     console.log("MOUNTED");
@@ -218,11 +219,7 @@ export default {
         },
       })
       .then((result) => {
-        if (
-          result &&
-          result.data && 
-          result.data.data
-        ) {
+        if (result && result.data && result.data.data) {
           this.providers = result.data.data;
         }
       })
@@ -238,9 +235,9 @@ export default {
     select(val, row) {
       console.log(val);
       console.log(row);
-    //  idProvider || !idProductProvider || !idMainProduct
+      //  idProvider || !idProductProvider || !idMainProduct
       if (!this.showNotLinkedProduct) {
-        return 'error';
+        return "error";
       }
       const idProductProvider = row[`id #${this.showNotLinkedProduct}`];
       const idProvider = this.showNotLinkedProduct;
@@ -248,7 +245,7 @@ export default {
         idProductProvider,
         idProvider,
       };
-      if (val !== 'New') {
+      if (val !== "New") {
         obj.idMainProduct = val;
       }
       axios
@@ -259,34 +256,34 @@ export default {
         })
         .then(() => {
           console.log("SUCCESS");
-          alert('Связан');
+          alert("Связан");
         })
         .catch(() => {
           console.log("ERROR");
-          alert('Ошибка');
+          alert("Ошибка");
         });
     },
     writeRowsInExcel() {
       axios
-        .post("http://localhost:3000/api/writeRowsInExcel", 
-        { 
-          headers: this.headers,
-          rows: [
-            ...this.tableInfo.rows, 
-            ...this.tableInfo.notLinkedRows
-          ]
-        }, {
-          headers: {
-            "Content-Type": "application/json",
+        .post(
+          "http://localhost:3000/api/writeRowsInExcel",
+          {
+            headers: this.headers,
+            rows: [...this.tableInfo.rows, ...this.tableInfo.notLinkedRows],
           },
-        })
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then(() => {
           console.log("SUCCESS");
         })
         .catch(() => {
           console.log("ERROR");
         });
-    }
+    },
   },
 };
 </script>

@@ -14,14 +14,14 @@
       <div class="my-10">
         <v-btn :disabled="!this.file" v-on:click="submitFile()">Submit</v-btn>
       </div>
-      <div v-if="readFromFile !== null">Read from file - {{ readFromFile }}</div>
+      <div v-if="readFromFile !== null">
+        Read from file - {{ readFromFile }}
+      </div>
       <div v-if="added !== null">Created or updated - {{ added }}</div>
       <div v-if="error !== null">Error - {{ error }}</div>
     </div>
     <h3>Products from files</h3>
-    <div>
-      
-    </div>
+    <div></div>
   </div>
 </template>
 
