@@ -1,14 +1,17 @@
 <template>
   <v-row class="mt-10">
     <v-col class="providerProduct" cols="6">
-      Выбор источника
-      <v-select
-        v-if="PROVIDERS"
-        v-model="idProvider"
-        :items="PROVIDERS"
-        item-text="nameProvider"
-        item-value="id"
-      />
+      <h4>Источник</h4>
+      <div>
+        <v-select
+          v-if="PROVIDERS"
+          v-model="idProvider"
+          :items="PROVIDERS"
+          item-text="nameProvider"
+          item-value="id"
+          label="Выбор источника"
+        />
+      </div>
       <providerProductsTable
         :providerProducts="PROVIDER_PRODUCTS"
         :idProvider="idProvider"
@@ -16,7 +19,8 @@
       />
     </v-col>
     <v-col class="mainProduct" cols="6">
-      {{ MAIN_PRODUCTS }}     
+      <h4>Основной ассортимент</h4>
+      <mainProductsTable :mainProducts="MAIN_PRODUCTS" />
     </v-col>
   </v-row>
 </template>
@@ -24,10 +28,11 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import providerProductsTable from '../components/providerProductsTable.vue';
+import mainProductsTable from '../components/mainProductsTable.vue';
 
 export default {
   name: "Binding",
-  components: { providerProductsTable },
+  components: { providerProductsTable, mainProductsTable },
   data() {
     return {
       providerProducts: null,
