@@ -15,6 +15,8 @@
           @change="reset"
         ></v-select>
       </div>
+      Создавать новые товары в основном ассортименте
+      <v-switch v-model="newMainProduct" />
       <label
         >File
         <input
@@ -64,6 +66,7 @@ export default {
       providers: null,
       showStatus: null,
       saveStatus: null,
+      newMainProduct: false
     };
   },
   computed: {
@@ -127,6 +130,7 @@ export default {
       console.log(this.file);
       formData.append("file1", this.file);
       formData.append("idProvider", this.idProvider && this.idProvider.id);
+      formData.append("newMainProduct", this.newMainProduct);
       axios
         .post("http://localhost:3000/api/readProviderFile", formData, {
           headers: {

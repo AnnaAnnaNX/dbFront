@@ -74,9 +74,9 @@
           <v-list-item-title>Основной ассортимент</v-list-item-title>
         </v-list-item>
 
-        <v-list-item to="Sources">
+        <!-- <v-list-item to="Sources">
           <v-list-item-title>Источники</v-list-item-title>
-        </v-list-item>
+        </v-list-item> -->
 
         <v-list-item to="Binding">
           <v-list-item-title>Связывание товаров</v-list-item-title>

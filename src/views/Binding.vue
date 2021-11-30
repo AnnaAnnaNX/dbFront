@@ -126,7 +126,8 @@ export default {
       console.log(this.idProductSourceForBinding.innerId);
       this.ADD_LINK({
         idProductProvider: this.idProductSourceForBinding
-          && this.idProductSourceForBinding.innerId,
+          && this.idProductSourceForBinding.innerId
+          && this.idProductSourceForBinding.innerId.toString(),
         idProvider: this.idProvider,
         idMainProduct: this.idMainAssortForBinding
           && this.idMainAssortForBinding.id
