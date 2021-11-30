@@ -1,7 +1,14 @@
 <template>
   <v-row class="mt-10">
     <v-col class="providerProduct" cols="6">
-      {{ PROVIDERS }}
+      Выбор источника
+      <v-select
+        v-if="PROVIDERS"
+        v-model="idProvider"
+        :items="PROVIDERS"
+        item-text="nameProvider"
+        item-value="id"
+      />
       <providerProductsTable
         :providerProducts="PROVIDER_PRODUCTS"
         :idProvider="idProvider"
