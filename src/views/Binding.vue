@@ -27,12 +27,25 @@
       persistent
       max-width="290"
     >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+          Связать с новым товаром
+        </v-btn>
+      </template>
       <v-card>
         <v-card-title class="text-h5">
           Связать товар #{{ idProductSourceForBinding
             && idProductSourceForBinding.innerId }}
-          с товаром основного ассортимента #{{ idMainAssortForBinding
-            && idMainAssortForBinding.id }}
+          с товаром основного ассортимента {{ idMainAssortForBinding
+            && idMainAssortForBinding.id
+            ? idMainAssortForBinding
+            && idMainAssortForBinding.id
+            : '(создать новый товар в основном ассортименте)'}}
         </v-card-title>
         
         <v-card-actions>
@@ -45,14 +58,14 @@
               SET_idMainAssortForBinding(null);
             }"
           >
-            Disagree
+            Отмена
           </v-btn>
           <v-btn
             color="green darken-1"
             text
-            @click="dialog = false"
+            @click="binding"
           >
-            Agree
+            Связать
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -104,8 +117,21 @@ export default {
     ...mapActions([
       "GET_MAIN_PRODUCTS",
       "GET_PROVIDER_PRODUCTS",
-      "GET_PROVIDERS"
+      "GET_PROVIDERS",
+      "ADD_LINK"
     ]),
+    binding() {
+      console.log('binding');
+      console.log(this.idProductSourceForBinding);
+      console.log(this.idProductSourceForBinding.innerId);
+      this.ADD_LINK({
+        idProductProvider: this.idProductSourceForBinding
+          && this.idProductSourceForBinding.innerId,
+        idProvider: this.idProvider,
+        idMainProduct: this.idMainAssortForBinding
+          && this.idMainAssortForBinding.id
+      });
+    }
   }
 };
 </script>

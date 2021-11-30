@@ -65,6 +65,44 @@ const generateFeeds = {
           commit("ADD_MAIN_PRODUCTS", null);
         });
     },
+    async ADD_LINK({ commit, dispatch }, payload) {
+      console.log('ADD_LINK');
+      console.log(payload);
+      if (!payload
+        || !payload.idProductProvider
+        || !payload.idProvider) {
+          alert('error');
+          return;
+        }
+      const obj = {
+        idProductProvider: payload.idProductProvider,
+        idProvider: parseInt(payload.idProvider, 10),
+      };
+      if (payload.idMainProduct) {
+        obj.idMainProduct = parseInt(payload.idMainProduct, 10);
+      }
+      console.log('obj');
+      console.log(obj);
+      await axios
+        .post("http://localhost:3000/api/addLink", obj, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then(() => {
+          console.log("SUCCESS");
+          // alert("Связан");
+          commit('SET_idProductSourceForBinding', null);
+          commit('SET_idMainAssortForBinding', null);
+          dispatch('GET_MAIN_PRODUCTS');
+          dispatch('GET_PROVIDER_PRODUCTS');
+        })
+        .catch(() => {
+          console.log("ERROR");
+          alert("Ошибка");
+        });
+      }
+
   },
 };
 
