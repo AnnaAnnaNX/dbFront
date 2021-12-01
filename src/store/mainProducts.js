@@ -31,8 +31,10 @@ const generateFeeds = {
       if (state.idProductSourceForBinding
         && state.idMainAssortForBinding) {
           state.openConfirmBinding = true;
+          console.log('SET true');      
         } else {
           state.openConfirmBinding = false;
+          console.log('SET false');      
         }
     },
     SET_idMainAssortForBinding(state, payload) {
@@ -41,10 +43,16 @@ const generateFeeds = {
       if (state.idProductSourceForBinding
         && state.idMainAssortForBinding) {
           state.openConfirmBinding = true;
+          console.log('SET true');      
         } else {
           state.openConfirmBinding = false;
+          console.log('SET false');      
         }
     },
+    SET_openConfirmBinding(state, payload) {
+      state.openConfirmBinding = payload;
+      console.log('click SET_openConfirmBinding');
+    }
   },
   actions: {
     async GET_MAIN_PRODUCTS({ commit }, payload) {

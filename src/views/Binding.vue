@@ -12,6 +12,15 @@
           label="Выбор источника"
         />
       </div>
+      <v-btn
+          v-if="idProvider"
+          color="primary"
+          @click="() => {SET_openConfirmBinding(true)}"
+          :disabled="!idProductSourceForBinding
+            || idMainAssortForBinding"
+        >
+        Связать с новым товаром
+      </v-btn>
       <providerProductsTable
         :providerProducts="PROVIDER_PRODUCTS"
         :idProvider="idProvider"
@@ -23,20 +32,10 @@
       <mainProductsTable :mainProducts="MAIN_PRODUCTS" />
     </v-col>
     <v-dialog
-      v-model="openConfirmBinding"
+      :value="openConfirmBinding"
       persistent
       max-width="290"
     >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Связать с новым товаром
-        </v-btn>
-      </template>
       <v-card>
         <v-card-title class="text-h5">
           Связать товар #{{ idProductSourceForBinding
@@ -112,7 +111,8 @@ export default {
   methods: {
     ...mapMutations([      
       "SET_idProductSourceForBinding",
-      "SET_idMainAssortForBinding"
+      "SET_idMainAssortForBinding",
+      "SET_openConfirmBinding"
     ]),
     ...mapActions([
       "GET_MAIN_PRODUCTS",
