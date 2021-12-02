@@ -1,7 +1,7 @@
 <template>
   <v-row class="mt-10">
     <v-col class="providerProduct" cols="6">
-      <h4>Источник</h4>
+      <h3>Источник</h3>
       <div>
         <v-select
           v-if="PROVIDERS"
@@ -28,7 +28,7 @@
       />
     </v-col>
     <v-col class="mainProduct" cols="6">
-      <h4>Основной ассортимент</h4>
+      <h3>Основной ассортимент</h3>
       <mainProductsTable :mainProducts="MAIN_PRODUCTS" />
     </v-col>
     <v-dialog

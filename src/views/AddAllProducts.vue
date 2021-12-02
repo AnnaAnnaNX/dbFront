@@ -15,8 +15,14 @@
           @change="reset"
         ></v-select>
       </div>
-      Создавать новые товары в основном ассортименте
-      <v-switch v-model="newMainProduct" />
+      <div>
+        Создавать новые товары в основном ассортименте
+        <v-switch
+          style="display: inline-block;"
+          v-model="newMainProduct"
+          class="ml-5"  
+        />
+      </div>
       <label
         >File
         <input
@@ -130,7 +136,6 @@ export default {
       console.log(this.file);
       formData.append("file1", this.file);
       formData.append("idProvider", this.idProvider && this.idProvider.id);
-      formData.append("newMainProduct", this.newMainProduct);
       axios
         .post("http://localhost:3000/api/readProviderFile", formData, {
           headers: {
@@ -166,6 +171,7 @@ export default {
                 values: JSON.stringify(fields.map((el) => row[el])),
               };
             }),
+            newMainProduct: this.newMainProduct
           },
           {
             headers: {

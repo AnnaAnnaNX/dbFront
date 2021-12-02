@@ -19,11 +19,30 @@
           src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
           width="100"
         /> -->
-        <v-icon style="font-size: 50px"> mdi-electron-framework </v-icon>
+        <v-btn icon :to="{ path: '/' }">
+          <v-icon style="font-size: 50px"> mdi-electron-framework </v-icon>
+        </v-btn>
         <span class="ml-5" style="font-size: 20px"> АртемидаСофт </span>
+           
       </div>
 
       <v-spacer></v-spacer>
+
+      <v-btn plain to="providers" class="mr-10">
+        Источники
+      </v-btn>
+      <v-btn plain to="AddAllProducts" class="mr-10">
+        Добавление данных
+      </v-btn>
+      <v-btn plain :to="{ path: '/' }" class="mr-10">
+        Основной ассортимент
+      </v-btn>
+      <v-btn plain to="Binding" class="mr-10">
+        Связывание товаров
+      </v-btn>
+      <v-btn plain to="feeds" class="mr-10">
+        Выгрузить фиды
+      </v-btn>
 
       <!-- <v-btn
         href="https://github.com/vuetifyjs/vuetify/releases/latest"
@@ -35,7 +54,7 @@
       </v-btn> -->
     </v-app-bar>
 
-    <v-navigation-drawer
+    <!-- <v-navigation-drawer
       v-model="drawer"
       absolute
       left
@@ -46,21 +65,6 @@
       fixed
     >
       <v-list>
-        <!-- <v-list-item to="/">
-          Добавить товары или обновить цены и наличие
-        </v-list-item> -->
-
-        <!-- <v-list-item to="set-prices">
-          <v-list-item-title>Обновить цены и наличие</v-list-item-title>
-        </v-list-item> -->
-
-        <!-- <v-list-item to="all-products">
-          <v-list-item-title>Просмотр товаров</v-list-item-title>
-        </v-list-item> -->
-
-        <!-- <v-list-item to="add-products">
-          <v-list-item-title>Добавление товаров с сопоставлением</v-list-item-title>
-        </v-list-item> -->
 
         <v-list-item to="providers">
           <v-list-item-title>Источники</v-list-item-title>
@@ -74,10 +78,6 @@
           <v-list-item-title>Основной ассортимент</v-list-item-title>
         </v-list-item>
 
-        <!-- <v-list-item to="Sources">
-          <v-list-item-title>Источники</v-list-item-title>
-        </v-list-item> -->
-
         <v-list-item to="Binding">
           <v-list-item-title>Связывание товаров</v-list-item-title>
         </v-list-item>
@@ -86,13 +86,10 @@
           <v-list-item-title>Выгрузить фиды</v-list-item-title>
         </v-list-item>
 
-        <!-- <v-list-item to="ShowAllProducts">
-          <v-list-item-title>(new)Показ всех товаров</v-list-item-title>
-        </v-list-item> -->
       </v-list>
-    </v-navigation-drawer>
+    </v-navigation-drawer> -->
 
-    <v-main style="padding-left: 256px">
+    <v-main>
       <div class="pa-10">
         <router-view />
       </div>
