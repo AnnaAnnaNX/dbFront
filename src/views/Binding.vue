@@ -6,7 +6,7 @@
         <v-select
           v-if="PROVIDERS"
           v-model="idProvider"
-          :items="PROVIDERS"
+          :items="PROVIDERS.filter((el) => (el && (el.nameProvider !== 'markup')))"
           item-text="nameProvider"
           item-value="id"
           label="Выбор источника"
@@ -34,17 +34,23 @@
     <v-dialog
       :value="openConfirmBinding"
       persistent
-      max-width="290"
+      max-width="500"
     >
       <v-card>
         <v-card-title class="text-h5">
-          Связать товар #{{ idProductSourceForBinding
+          Связать товар 
+          <v-list-item-title>
+            # {{ idProductSourceForBinding
             && idProductSourceForBinding.innerId }}
-          с товаром основного ассортимента {{ idMainAssortForBinding
+          </v-list-item-title>
+          с товаром основного ассортимента
+          <v-list-item-title>
+            {{ idMainAssortForBinding
             && idMainAssortForBinding.id
-            ? idMainAssortForBinding
-            && idMainAssortForBinding.id
+            ? `# ${idMainAssortForBinding
+            && idMainAssortForBinding.id}`
             : '(создать новый товар в основном ассортименте)'}}
+          </v-list-item-title>
         </v-card-title>
         
         <v-card-actions>

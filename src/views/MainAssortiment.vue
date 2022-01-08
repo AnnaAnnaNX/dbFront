@@ -5,7 +5,15 @@
       v-if="tableInfo && tableInfo.rows"
       :headers="headers"
       :items="tableInfo.rows"
+      :search="search"
     >
+      <template v-slot:top>
+        <v-text-field
+          v-model="search"
+          label="Search"
+          class="mx-4"
+        ></v-text-field>
+      </template>
       <template v-slot:item.id="{ item }">
         <div v-if="item.id">
           {{ item.id }}
@@ -45,6 +53,7 @@ export default {
   components: {},
   data() {
     return {
+      search: '',
       providerProducts: null,
       mainProducts: null,
       providers: null,
