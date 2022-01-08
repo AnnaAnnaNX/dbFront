@@ -1,20 +1,24 @@
 <template>
-  <div>
+  <div style="margin: 0 auto; width: 700px;">
     <v-btn
+      color="primary"
       @click="
         () => {
           onClick('http://localhost:3000/api/getUmlYml', 'ym');
         }
       "
+      style="width: 300px;"
       >Выгрузить yml Яндекс.Маркет</v-btn
     >
     <v-btn
+      color="primary"
       class="ml-10"
       @click="
         () => {
           onClick('http://localhost:3000/api/getUmlOzon', 'ozon');
         }
       "
+      style="width: 300px;"
       >Выгрузить yml Ozon</v-btn
     >
   </div>

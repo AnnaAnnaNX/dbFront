@@ -32,10 +32,17 @@
           @change="handleFileUpload($event)"
         />
       </label>
-      <div class="my-10">
-        <v-btn :disabled="!this.file" v-on:click="submitFile()">Submit</v-btn>
-        {{ showStatus }}
+      <div class="my-10" style="display: flex; align-items: center;">
+        <v-btn :disabled="!this.file" v-on:click="submitFile()" color="primary">Submit</v-btn>
+        <v-list-item-content class="ml-10">{{ showStatus }}</v-list-item-content>
       </div>
+    </div>
+    <div v-if="flagReadProviderFile">
+      <v-progress-circular
+        :size="50"
+        color="primary"
+        indeterminate
+      ></v-progress-circular>
     </div>
     <div v-if="contentFile">
       <h3>Products from files</h3>
@@ -48,8 +55,10 @@
           class="elevation-1"
         ></v-data-table>
       </div>
-      <v-btn class="mt-10" color="primary" @click="save">Сохранить</v-btn>
-      {{ saveStatus }}
+      <div class="mt-10" style="display: flex; align-items: center;">
+        <v-btn color="primary" @click="save">Сохранить</v-btn>
+        <v-list-item-content class="ml-10">{{ saveStatus }}</v-list-item-content>
+      </div>
     </div>
   </div>
 </template>
@@ -72,7 +81,8 @@ export default {
       providers: null,
       showStatus: null,
       saveStatus: null,
-      newMainProduct: false
+      newMainProduct: false,
+      flagReadProviderFile: false
     };
   },
   computed: {
@@ -108,6 +118,7 @@ export default {
     },
   },
   mounted() {
+    this.flagReadProviderFile = false;
     axios
       .get("http://localhost:3000/api/getProviders", {
         headers: {
@@ -129,6 +140,7 @@ export default {
       this.file = this.$refs.file.files[0];
     },
     submitFile() {
+      this.flagReadProviderFile = true;
       this.error = null;
       this.readFromFile = null;
       this.added = null;
@@ -147,11 +159,13 @@ export default {
           console.log("SUCCESS");
           this.showStatus = "Успешно загружен файл";
           this.contentFile = result && result.data;
+          this.flagReadProviderFile = false;
         })
         .catch(() => {
           console.log("ERROR");
           this.showStatus = "Ошиюка загрузки файла";
           this.contentFile = null;
+          this.flagReadProviderFile = false;
         });
     },
     save() {

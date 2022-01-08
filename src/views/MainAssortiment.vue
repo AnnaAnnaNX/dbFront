@@ -10,7 +10,7 @@
       <template v-slot:top>
         <v-text-field
           v-model="search"
-          label="Search"
+          label="Поиск"
           class="mx-4"
         ></v-text-field>
       </template>
@@ -35,12 +35,14 @@
       </template>
     </v-data-table>
     <div v-if="error !== null">Error - {{ error }}</div>
-    <v-btn @click.prevent="writeRowsInExcel" color="primary"
-      >Выгрузить ассортимент в Excel</v-btn
-    >
-    <v-btn @click.prevent="writeMarkupInExcel" color="primary" class="ml-5"
-      >Выгрузить файл для установки наценки</v-btn
-    >
+    <div style="margin: 0 auto; width: 900px;">
+      <v-btn @click.prevent="writeRowsInExcel" color="primary"
+        >Выгрузить ассортимент в Excel</v-btn
+      >
+      <v-btn @click.prevent="writeMarkupInExcel" color="primary" class="ml-5"
+        >Выгрузить файл для установки наценки</v-btn
+      >
+    </div>
   </div>
 </template>
 
