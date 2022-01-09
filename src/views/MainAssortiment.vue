@@ -2,9 +2,9 @@
   <div>
     <h3>Основной ассортимент</h3>
     <v-data-table
-      v-if="tableInfo && tableInfo.rows"
+      v-if="assort && assort.rows"
       :headers="headers"
-      :items="tableInfo.rows"
+      :items="assort.rows"
       :search="search"
     >
       <template v-slot:top>
@@ -48,7 +48,6 @@
 
 <script>
 import axios from "axios";
-import moment from "moment";
 
 export default {
   name: "MainAssortiment",
@@ -62,164 +61,16 @@ export default {
       error: null,
       shortListHeaders: true,
       showNotLinkedProduct: null,
+      assort: null
     };
   },
   // column name - <имя поля> #<idProvider>
   computed: {
-    // headers
-    tableInfo() {
-      if (!this.mainProducts || !this.providerProducts || !this.providers) {
-        return null;
-      }
-      const mainIds = this.mainProducts.map((el) => el.id);
-      const obj = {};
-      mainIds.forEach((el) => {
-        obj[el] = {};
-      });
-      // иметь сопоставление idProvider с именем провайдера
-      // nameProviderIdProviderObj {idProvider: nameProvider}
-      const nameProviderIdProviderObj = {};
-      this.providers.forEach((provider) => {
-        if (provider.id) {
-          nameProviderIdProviderObj[provider.nameProvider] = {
-            id: provider.id,
-            fieldsNames:
-              provider.fieldsNames && JSON.parse(provider.fieldsNames),
-          };
-        }
-      });
-      const idProviderNameProviderObj = {};
-      this.providers.forEach((provider) => {
-        if (provider.id && provider.nameProvider) {
-          idProviderNameProviderObj[provider.id] = provider.nameProvider;
-        }
-      });
-      this.providerProducts.forEach((el) => {
-        if (el.idMainProduct) {
-          // obj[idMainProduct][`count #${el.idProvider}`] = el.count;
-
-          if (
-            nameProviderIdProviderObj["YM"] &&
-            el.idProvider === nameProviderIdProviderObj["YM"].id
-          ) {
-            obj[el.idMainProduct]["YMId"] = el.idProductProvider;
-            const fieldsNames = nameProviderIdProviderObj["YM"].fieldsNames;
-            const n = fieldsNames.indexOf("name");
-            const values = el.values && JSON.parse(el.values);
-            obj[el.idMainProduct]["YMName"] = values && values[n];
-          } else if (
-            nameProviderIdProviderObj["Ozon"] &&
-            el.idProvider === nameProviderIdProviderObj["Ozon"].id
-          ) {
-            obj[el.idMainProduct]["OzonId"] = el.idProductProvider;
-            const fieldsNames = nameProviderIdProviderObj["Ozon"].fieldsNames;
-            const n = fieldsNames.indexOf("name");
-            const values = el.values && JSON.parse(el.values);
-            obj[el.idMainProduct]["OzonName"] = values && values[n];
-          } else if (
-            nameProviderIdProviderObj["1C"] &&
-            el.idProvider === nameProviderIdProviderObj["1C"].id
-          ) {
-            obj[el.idMainProduct]["1CId"] = el.idProductProvider;
-            const values = el.values && JSON.parse(el.values);
-            const fieldsNames = nameProviderIdProviderObj["1C"].fieldsNames;
-            let n = fieldsNames.indexOf("name");
-            obj[el.idMainProduct]["1CName"] = values && values[n];
-            n = fieldsNames.indexOf("price");
-            obj[el.idMainProduct]["1CPrice"] = values && values[n];
-            obj[el.idMainProduct]["1CUpdate"] = el.updatedAt;
-          } else if (
-            nameProviderIdProviderObj["markup"] &&
-            el.idProvider === nameProviderIdProviderObj["markup"].id
-          ) {
-            obj[el.idMainProduct]["markupId"] = el.idProductProvider;
-            const values = el.values && JSON.parse(el.values);
-            const fieldsNames = nameProviderIdProviderObj["markup"].fieldsNames;
-            let n = fieldsNames.indexOf("markup");
-            obj[el.idMainProduct]["markup"] = values && values[n];
-          }
-          // здесь только поставщики (берем любого поставщика)
-          else if (!obj[el.idMainProduct]["providerName"]) {
-            console.log("el.idProvider");
-            console.log(el.idProvider);
-            const providerName = idProviderNameProviderObj[el.idProvider];
-            console.log("providerName");
-            console.log(providerName);
-            obj[el.idMainProduct]["providerName"] = providerName;
-            const fieldsNames =
-              nameProviderIdProviderObj[providerName] &&
-              nameProviderIdProviderObj[providerName].fieldsNames;
-            let n = fieldsNames && fieldsNames.indexOf("name");
-            const values = el.values && JSON.parse(el.values);
-            obj[el.idMainProduct]["providerProductName"] = values && values[n];
-            n = fieldsNames && fieldsNames.indexOf("price");
-            obj[el.idMainProduct]["providerProductprice"] = values && values[n];
-            obj[el.idMainProduct]["providerProductUpdate"] = el.updatedAt;
-          }
-          // newPrice
-          if (
-            obj[el.idMainProduct]["providerProductprice"] &&
-            obj[el.idMainProduct]["1CPrice"]
-          ) {
-            const dataProvider =
-              obj[el.idMainProduct]["providerProductUpdate"] &&
-              moment(obj[el.idMainProduct]["providerProductUpdate"]);
-            const data1C =
-              obj[el.idMainProduct]["1CUpdate"] &&
-              moment(obj[el.idMainProduct]["1CUpdate"]);
-            console.log("dataProvider");
-            console.log(dataProvider);
-            console.log("data1C");
-            console.log(data1C);
-          }
-
-          // берет цену поставщика или если ее нет, то цену 1С
-          if (
-            obj[el.idMainProduct]["markup"] ||
-            obj[el.idMainProduct]["providerProductprice"] ||
-            obj[el.idMainProduct]["1CPrice"]
-          ) {
-            const val =
-              obj[el.idMainProduct]["markup"] *
-              (obj[el.idMainProduct]["providerProductprice"] ||
-                obj[el.idMainProduct]["1CPrice"]);
-            if (val) {
-              obj[el.idMainProduct]["newPrice"] = Math.round(val);
-            }
-          }
-        }
-      });
-      const rows = Object.keys(obj).map((id) => ({ id: id, ...obj[id] }));
-      console.log("rows");
-      console.log(rows);
-      const shortListHeaders = [
-        "YMId",
-        "YMName",
-        "OzonId",
-        "OzonName",
-        "1CId",
-        "1CName",
-        "1CPrice",
-        // '1CUpdate',
-        "markupId",
-        "markup",
-        "providerName",
-        "providerProductName",
-        "providerProductprice",
-        // 'providerProductUpdate',
-        "newPrice",
-      ];
-
-      return {
-        rows,
-        shortListHeaders: ["id", ...shortListHeaders],
-      };
-    },
     headers() {
-      if (!this.tableInfo) {
+      if (!this.assort) {
         return null;
       }
-      let list = this.tableInfo.shortListHeaders;
+      let list = this.assort.shortListHeaders;
       return list.map((el) => ({
         text: el,
         align: "start",
@@ -232,38 +83,14 @@ export default {
     this.products = null;
     this.error = null;
     axios
-      .get("http://localhost:3000/api/getProviderProducts")
-      .then((result) => {
-        console.log("SUCCESS");
-        if (result && result.data && result.data.data) {
-          this.providerProducts = result.data.data;
-        }
-      })
-      .catch(() => {
-        console.log("ERROR");
-        this.providerProducts = null;
-      });
-    axios
-      .get("http://localhost:3000/api/getMainProducts")
-      .then((result) => {
-        console.log("SUCCESS");
-        if (result && result.data && result.data.data) {
-          this.mainProducts = result.data.data;
-        }
-      })
-      .catch(() => {
-        console.log("ERROR");
-        this.mainProducts = null;
-      });
-    axios
-      .get("http://localhost:3000/api/getProviders", {
+      .get("http://localhost:3000/api/getAssort", {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
       .then((result) => {
-        if (result && result.data && result.data.data) {
-          this.providers = result.data.data;
+        if (result && result.data) {
+          this.assort = result.data;
         }
       })
       .catch(() => {
@@ -311,8 +138,8 @@ export default {
         url: "http://localhost:3000/api/writeRowsInExcel",
         method: "POST",
         data: {
-          headers: this.headers,
-          rows: this.tableInfo && this.tableInfo.rows,
+          headers: this.assort && this.assort.shortListHeaders,
+          rows: this.assort && this.assort.rows,
         },
         headers: {
           "Content-Type": "application/json",
@@ -346,8 +173,8 @@ export default {
         url: "http://localhost:3000/api/writeMarkupInExcel",
         method: "POST",
         data: {
-          headers: this.headers,
-          rows: this.tableInfo && this.tableInfo.rows,
+          headers: this.assort && this.assort.shortListHeaders,
+          rows: this.assort && this.assort.rows,
         },
         headers: {
           "Content-Type": "application/json",
