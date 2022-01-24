@@ -2,9 +2,9 @@
   <div>
     <h3>Основной ассортимент</h3>
     <v-data-table
-      v-if="assort && assort.rows"
+      v-if="ASSORT && ASSORT.rows"
       :headers="headers"
-      :items="assort.rows"
+      :items="ASSORT.rows"
       :search="search"
     >
       <template v-slot:top>
@@ -33,6 +33,32 @@
       <template v-slot:item._1CUpdate="{ item }">
         {{ moment(item["1CUpdate"]) }}
       </template>
+      <template v-slot:item.markup="{ item }">
+        <div style="display: flex; align-items: center;">
+          <v-text-field
+            v-model="item.markup"
+            style="width: 30px;"
+            class="centered-input"
+          />
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                @click="() => { CHANGE_MARKUP({
+                  markup: parseFloat(item.markup.replace(',', '.')),
+                  markupId: item.markupId
+                }); }"
+                :disabled="!isFloat(item.markup)"
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon>mdi-content-save</v-icon>
+              </v-btn>
+            </template>
+            <span>Изменить наценку</span>
+          </v-tooltip>
+        </div>
+      </template>
     </v-data-table>
     <div v-if="error !== null">Error - {{ error }}</div>
     <div style="margin: 0 auto; width: 900px;">
@@ -48,6 +74,7 @@
 
 <script>
 import axios from "axios";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "MainAssortiment",
@@ -60,45 +87,45 @@ export default {
       providers: null,
       error: null,
       shortListHeaders: true,
-      showNotLinkedProduct: null,
-      assort: null
+      showNotLinkedProduct: null
     };
   },
   // column name - <имя поля> #<idProvider>
   computed: {
+    ...mapGetters([
+      'ASSORT'
+    ]),
     headers() {
-      if (!this.assort) {
+      if (!this.ASSORT) {
         return null;
       }
-      let list = this.assort.shortListHeaders;
+      let list = this.ASSORT.shortListHeaders;
       return list.map((el) => ({
         text: el,
         align: "start",
         value: el,
       }));
-    },
+    }
   },
   mounted() {
-    console.log("MOUNTED");
-    this.products = null;
-    this.error = null;
-    axios
-      .get("http://localhost:3000/api/getAssort", {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((result) => {
-        if (result && result.data) {
-          this.assort = result.data;
-        }
-      })
-      .catch(() => {
-        console.log("ERROR");
-        this.providers = null;
-      });
+    this.GET_ASSORT();
   },
   methods: {
+    ...mapActions([
+      "CHANGE_MARKUP",
+      "GET_ASSORT"
+    ]),
+    isFloat(str) {
+      try {
+        const num = parseFloat(str);
+        if ((typeof num === 'number') && isFinite(num)) {
+          return true;
+        }
+        return false;
+      } catch (e) {
+        return false;
+      } 
+    },
     handleFileUpload() {
       this.file = this.$refs.file.files[0];
     },
@@ -138,8 +165,8 @@ export default {
         url: "http://localhost:3000/api/writeRowsInExcel",
         method: "POST",
         data: {
-          headers: this.assort && this.assort.shortListHeaders,
-          rows: this.assort && this.assort.rows,
+          headers: this.ASSORT && this.ASSORT.shortListHeaders,
+          rows: this.ASSORT && this.ASSORT.rows,
         },
         headers: {
           "Content-Type": "application/json",
@@ -173,8 +200,8 @@ export default {
         url: "http://localhost:3000/api/writeMarkupInExcel",
         method: "POST",
         data: {
-          headers: this.assort && this.assort.shortListHeaders,
-          rows: this.assort && this.assort.rows,
+          headers: this.ASSORT && this.ASSORT.shortListHeaders,
+          rows: this.ASSORT && this.ASSORT.rows,
         },
         headers: {
           "Content-Type": "application/json",
@@ -204,7 +231,12 @@ export default {
           console.log("e.message");
           console.log(e.message);
         });
-    },
+    }
   },
 };
 </script>
+<style>
+  .centered-input input {
+    text-align: center
+  }
+</style>
